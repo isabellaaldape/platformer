@@ -1,5 +1,6 @@
 import './src/style.css'
 import { Player } from "./src/js/player.js";
+import { Platform } from './src/js/platform';
 
 const canvas = document.querySelector('canvas');
 canvas.width = window.innerWidth;
@@ -8,6 +9,7 @@ canvas.height = window.innerHeight;
 const context = canvas.getContext('2d');
 
 const player = new Player(context);
+const platform = new Platform(context);
 
 const keys = {
     right: {
@@ -28,9 +30,10 @@ const keys = {
 function animate() {
     requestAnimationFrame(animate)
     context.clearRect(0,0, canvas.width,canvas.height)
-
+  
     player.update();
-    
+    platform.draw();
+
     if (keys.right.pressed) {
         player.velocity.x = 7;
     } else if(keys.left.pressed){
@@ -38,6 +41,14 @@ function animate() {
     } else {
         player.velocity.x = 0;
     }
+
+    if (player.position.y + player.height + player.velocity.y 
+        <= platform.position.y
+        && player.position.x + player.width > platform.position.x
+        && player.position.x < platform.position.x + platform.width) {
+        player.velocity.y = 0;
+    }
+
 }
 
 
